@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   CalendarDays,
@@ -27,6 +27,13 @@ const navItems = [
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+
+  async function handleLogout() {
+    await fetch("/api/logout", { method: "POST" });
+    router.push("/");
+    router.refresh();
+  }
 
   return (
     <aside
@@ -78,13 +85,14 @@ export default function Sidebar() {
           <Settings className="w-5 h-5 flex-shrink-0" />
           {!collapsed && <span>Configurações</span>}
         </Link>
-        <Link
-          href="/"
-          className="flex items-center gap-3 px-4 py-2.5 mx-2 rounded-xl text-neutral-400 hover:bg-red-900/40 hover:text-red-400 transition-all text-sm font-medium"
+        <button
+          onClick={handleLogout}
+          title={collapsed ? "Sair" : undefined}
+          className="flex items-center gap-3 px-4 py-2.5 mx-2 rounded-xl text-neutral-400 hover:bg-red-900/40 hover:text-red-400 transition-all text-sm font-medium text-left w-auto"
         >
           <LogOut className="w-5 h-5 flex-shrink-0" />
           {!collapsed && <span>Sair</span>}
-        </Link>
+        </button>
 
         {/* Collapse toggle */}
         <button
